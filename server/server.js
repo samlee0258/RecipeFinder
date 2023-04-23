@@ -24,7 +24,7 @@ app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
 app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello World!' });
+  res.json({ message: 'Hello!' });
 });
 
 app.get('/api/public/Tables/Recipes', async (req, res, next) => {
@@ -131,6 +131,39 @@ app.post('/api/public/Tables/Favorites', async (req, res, next) => {
     const [newRecipe] = result.rows;
     res.status(201).json(newRecipe);
   } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/public/Tables/Recipes', async (req, res, next) => {
+  try {
+    const { recipe } = req.body;
+    if (!recipe) {
+      throw new ClientError(400, 'recipe is required');
+    }
+    const calories = Number(recipe.calories.toFixed(0));
+    console.log(calories);
+    const servingSize = Number(recipe.yield);
+    if (!Number.isInteger(calories) || calories <= 0) {
+      throw new ClientError(400, 'calories must be a positive integer');
+    }
+    if (!Number.isInteger(servingSize) || servingSize <= 0) {
+      throw new ClientError(400, 'servingSize must be a positive integer');
+    }
+    const ingredients = JSON.stringify(recipe.ingredientLines);
+    const sql = `
+    insert into "Recipes" ("name", "image", "ingredients", "calories", "servingSize", "recipeLink", "cuisineType", "mealType", "dishType", "uri")
+    values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    returning *
+    `;
+    const params = [recipe.label, recipe.image, ingredients, calories, servingSize, recipe.url, recipe.cuisineType, recipe.mealType, recipe.dishType, recipe.uri];
+    const result = await db.query(sql, params);
+    const newRecipe = result.rows[0];
+    res.status(201).json(newRecipe);
+  } catch (err) {
+    if (err.code === '23505') {
+      console.error({ message: 'Recipe already added.' });
+    }
     next(err);
   }
 });

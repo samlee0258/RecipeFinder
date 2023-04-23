@@ -17,6 +17,7 @@ CREATE TABLE "public"."Recipes" (
 	"cuisineType" TEXT,
 	"mealType" TEXT,
 	"dishType" TEXT,
+  "uri" TEXT NOT NULL UNIQUE,
 	CONSTRAINT "Recipes_pk" PRIMARY KEY ("recipeId")
 ) WITH (
   OIDS=FALSE
