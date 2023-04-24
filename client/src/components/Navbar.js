@@ -1,14 +1,15 @@
-import MenuDrawer from "./MenuDrawer"
+import { Link } from "react-router-dom";
+import MenuDrawer from "./MenuDrawer";
 
 const menu = {
   menuHeading: 'Menu',
-  menuItems: ['Home', 'Favorites']
+  menuItems: ['Favorites']
 }
 
 export default function Navbar() {
   return (
     <div className="nav">
-      <a href="/" className="site-title">RecipeFinder</a>
+      <Link to="/" className="site-title">RecipeFinder</Link>
       <MenuDrawer menuHeading={menu.menuHeading} menuItems={menu.menuItems}/>
     </div>
   )

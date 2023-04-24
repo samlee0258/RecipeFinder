@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaBars } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import './MenuDrawer.css';
 
 export default function MenuDrawer({ menuHeading, menuItems }) {
@@ -32,7 +33,7 @@ export default function MenuDrawer({ menuHeading, menuItems }) {
 }
 
 function ItemLinks({ items, handleLinkClick }) {
-  const itemLinks = items.map((item) => <a href={`${item}`} className='menu-item' key={item} onClick={() => handleLinkClick(item)}>{item}</a>)
+  const itemLinks = items.map((item) => <Link to={`${item}`} className='menu-item' key={item} onClick={() => handleLinkClick(item)}>{item}</Link>)
 
   return (
     <>
