@@ -1,7 +1,40 @@
 import { Card, Button } from "semantic-ui-react";
+import { useNavigate } from "react-router-dom";
 
 export default function RecipeCard({ recipe }) {
+  const navigate = useNavigate();
   console.log('recipe:', recipe);
+  async function addToFavorites() {
+    try {
+      const resRecipes = await fetch('/api/public/Tables/Recipes', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ recipe: recipe.recipe })
+      });
+      if (!resRecipes.ok) {
+        throw new Error('Failed to add recipe.');
+      }
+      const jsonData = await resRecipes.json();
+      console.log('jsonData:', jsonData);
+      const resFav = await fetch('/api/public/Tables/Favorites', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ recipeId: jsonData.recipeId, userId: 1 })
+      });
+      if (!resFav.ok) {
+        throw new Error('Failed to add to favorites.');
+      }
+      const favJson = await resFav.json();
+      console.log('favJson:', favJson);
+      navigate('/favorites')
+      } catch (err) {
+        console.error(err);
+    }
+  }
   return (
           <Card
             className="recipeCard"
@@ -16,7 +49,7 @@ export default function RecipeCard({ recipe }) {
             }
             extra={
               <div>
-                <Button primary positive basic>Favorites</Button>
+                <Button primary positive basic onClick={addToFavorites}>Favorites</Button>
               </div>
             }
           />

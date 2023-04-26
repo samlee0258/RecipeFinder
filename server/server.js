@@ -143,7 +143,7 @@ app.post('/api/public/Tables/Recipes', async (req, res, next) => {
     }
     const calories = Number(recipe.calories.toFixed(0));
     console.log(calories);
-    const servingSize = Number(recipe.yield);
+    const servingSize = Number(recipe.yield.toFixed(0));
     if (!Number.isInteger(calories) || calories <= 0) {
       throw new ClientError(400, 'calories must be a positive integer');
     }
