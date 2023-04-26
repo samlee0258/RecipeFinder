@@ -16,7 +16,6 @@ export default function MenuDrawer({ menuHeading, menuItems }) {
     setIsOpened(!isOpened);
   }
 
-
   return (
     <div className='container'>
       {!isOpened && <button className='menu-button' onClick={handleMenu}><FaBars size={28} /></button>}

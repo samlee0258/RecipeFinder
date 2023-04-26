@@ -1,14 +1,31 @@
+import React from 'react';
+import RecipeCard from '../components/RecipeCard';
+import { Grid } from 'semantic-ui-react';
 
-export default function SearchResult() {
+export default function SearchResult({data}) {
+  const value = data.map((recipe) => {
+    return <RecipeCard recipe={recipe} />
+  })
+  console.log('value:', value);
+
   return (
-    <h1 style={{
-                "font-size": '3rem',
-                "font-weight": 'bold',
-                "color": 'white',
-                "-webkit-text-stroke": '1px black'
-    }}
-    >
-      Search Result
-    </h1>
+    <div>
+      <h1 style={{
+                  fontSize: '3rem',
+                  fontWeight: 'bold',
+                  color: 'white',
+                  WebkitTextStroke: '1px black'
+                }}
+      >
+        Search Result
+      </h1>
+      <Grid container>
+        <Grid.Row children>
+          <Grid>
+            {value}
+          </Grid>
+        </Grid.Row>
+      </Grid>
+    </div>
   );
 }

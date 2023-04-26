@@ -2,10 +2,11 @@
 export default function Favorites() {
   return (
     <h1 style={{
-                "font-size": '3rem',
-                "font-weight": 'bold',
-                "color": 'white',
-                "-webkit-text-stroke": '1px black' }}
+                fontSize: '3rem',
+                fontWeight: 'bold',
+                color: 'white',
+                WebkitTextStroke: '1px black'
+              }}
     >
       Favorites
     </h1>
