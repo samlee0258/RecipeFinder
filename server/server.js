@@ -73,10 +73,14 @@ app.get('/api/public/Tables/Favorites', async (req, res, next) => {
   try {
     const sql = `
       select *
-        from "Favorites";
+        from "Favorites"
+        join "Recipes" using ("recipeId");
     `;
     const result = await db.query(sql);
     const favorites = result.rows;
+    favorites.forEach((recipe) => {
+      fixIngredients(recipe);
+    });
     res.json(favorites);
   } catch (err) {
     next(err);
@@ -101,6 +105,7 @@ app.get('/api/public/Tables/Favorites/:recipeId', async (req, res, next) => {
     if (!recipe) {
       throw new ClientError(404, `cannot find recipe with recipeId ${recipeId}`);
     } else {
+      fixIngredients(recipe);
       res.json(recipe);
     }
   } catch (err) {
@@ -151,14 +156,18 @@ app.post('/api/public/Tables/Recipes', async (req, res, next) => {
       throw new ClientError(400, 'servingSize must be a positive integer');
     }
     const ingredients = JSON.stringify(recipe.ingredientLines);
+    const cuisineType = recipe.cuisineType[0];
+    const mealType = recipe.mealType[0];
+    const dishType = recipe.dishType[0];
     const sql = `
     insert into "Recipes" ("name", "image", "ingredients", "calories", "servingSize", "recipeLink", "cuisineType", "mealType", "dishType", "uri")
     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     returning *
     `;
-    const params = [recipe.label, recipe.image, ingredients, calories, servingSize, recipe.url, recipe.cuisineType, recipe.mealType, recipe.dishType, recipe.uri];
+    const params = [recipe.label, recipe.image, ingredients, calories, servingSize, recipe.url, cuisineType, mealType, dishType, recipe.uri];
     const result = await db.query(sql, params);
     const newRecipe = result.rows[0];
+    fixIngredients(newRecipe);
     res.status(201).json(newRecipe);
   } catch (err) {
     if (err.code === '23505') {
@@ -197,3 +206,7 @@ app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   process.stdout.write(`\n\napp listening on port ${process.env.PORT}\n\n`);
 });
+
+function fixIngredients(newRecipe) {
+  newRecipe.ingredients = JSON.parse(newRecipe.ingredients);
+}

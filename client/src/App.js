@@ -25,13 +25,11 @@ function App() {
     e.preventDefault();
     try {
       const response = await fetch(RECIPE_URL);
-      console.log('response:', response)
       if (!response.ok) {
         throw new Error(400, 'recipe not found');
       }
       const jsonData = await response.json();
       setRecipes(jsonData.hits);
-      console.log('data:', jsonData.hits)
     } catch (err) {
       console.error('Error:', err);
     }

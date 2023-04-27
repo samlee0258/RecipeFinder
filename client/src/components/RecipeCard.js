@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function RecipeCard({ recipe }) {
   const navigate = useNavigate();
-  console.log('recipe:', recipe);
+
   async function addToFavorites() {
     try {
       const resRecipes = await fetch('/api/public/Tables/Recipes', {
@@ -17,7 +17,6 @@ export default function RecipeCard({ recipe }) {
         throw new Error('Failed to add recipe.');
       }
       const jsonData = await resRecipes.json();
-      console.log('jsonData:', jsonData);
       const resFav = await fetch('/api/public/Tables/Favorites', {
         method: "POST",
         headers: {
@@ -28,16 +27,13 @@ export default function RecipeCard({ recipe }) {
       if (!resFav.ok) {
         throw new Error('Failed to add to favorites.');
       }
-      const favJson = await resFav.json();
-      console.log('favJson:', favJson);
-      navigate('/favorites')
+      navigate('/favorites');
       } catch (err) {
         console.error(err);
     }
   }
   return (
           <Card
-            className="recipeCard"
             image={recipe.recipe.image}
             header={recipe.recipe.label}
             description={
