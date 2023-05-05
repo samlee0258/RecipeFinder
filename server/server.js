@@ -4,7 +4,6 @@ import errorMiddleware from './lib/error-middleware.js';
 import ClientError from './lib/client-error.js';
 import pg from 'pg';
 
-// eslint-disable-next-line no-unused-vars -- Remove when used
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -22,10 +21,6 @@ app.use(express.static(reactStaticDir));
 // Static directory for file uploads server/public/
 app.use(express.static(uploadsStaticDir));
 app.use(express.json());
-
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello!' });
-});
 
 app.get('/api/public/Tables/Recipes', async (req, res, next) => {
   try {
@@ -117,14 +112,14 @@ app.post('/api/public/Tables/Favorites', async (req, res, next) => {
   try {
     const userId = Number(req.body.userId);
     const recipeId = Number(req.body.recipeId);
-    if (Number.isNaN(recipeId) || !Number.isInteger(recipeId) || recipeId < 0) {
-      throw new ClientError(400, 'recipeId must be a positive integer');
-    }
-    if (Number.isNaN(recipeId) || !Number.isInteger(userId) || userId < 0) {
-      throw new ClientError(400, 'userId must be a positive integer');
-    }
     if (!userId || !recipeId) {
       throw new ClientError(400, 'userId and recipeId are required fields');
+    }
+    if (Number.isNaN(recipeId) || !Number.isInteger(recipeId) || recipeId <= 0) {
+      throw new ClientError(400, 'recipeId must be a positive integer');
+    }
+    if (Number.isNaN(recipeId) || !Number.isInteger(userId) || userId <= 0) {
+      throw new ClientError(400, 'userId must be a positive integer');
     }
     const sql = `
       insert into "Favorites" ("recipeId", "userId")

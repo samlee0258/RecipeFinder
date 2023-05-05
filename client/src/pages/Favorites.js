@@ -1,5 +1,7 @@
 import { Grid, Card } from "semantic-ui-react"
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import RecipeInfo from "../components/RecipeInfo";
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
@@ -26,8 +28,10 @@ export default function Favorites() {
   }, []);
 
   const favoriteValue = favorites.map((recipe) => {
+    console.log('recipe:', recipe);
     return (
       <Card
+        onClick={RecipeInfo}
         image={recipe.image}
         header={recipe.name}
         description={
@@ -35,6 +39,11 @@ export default function Favorites() {
             <p>CuisineType: {recipe.cuisineType}</p>
             <p>MealType: {recipe.mealType}</p>
             <p>DishType: {recipe.dishType}</p>
+          </div>
+        }
+        extra={
+          <div>
+            <Link to={recipe.recipeLink}>Recipe Link</Link>
           </div>
         }
       />

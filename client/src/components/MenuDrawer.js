@@ -32,7 +32,7 @@ export default function MenuDrawer({ menuHeading, menuItems }) {
 }
 
 function ItemLinks({ items, handleLinkClick }) {
-  const itemLinks = items.map((item) => <Link to={`${item}`} className='menu-item' key={item} onClick={() => handleLinkClick(item)}>{item}</Link>)
+  const itemLinks = items.map((item) => <Link to={item} className='menu-item' key={item} onClick={() => handleLinkClick(item)}>{item}</Link>)
 
   return (
     <>

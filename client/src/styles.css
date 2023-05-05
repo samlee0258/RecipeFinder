@@ -4,7 +4,8 @@
 
 body {
   margin: 0;
-  background-image: url('https://images.unsplash.com/photo-1535202610320-919f9b13de77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80');
+  background: url('../src/pages/serge-le-strat-rS4OSc9yhSo-unsplash.jpg') center fixed !important;
+  background-size: cover !important;
 }
 
 .nav {
@@ -40,4 +41,12 @@ body {
 .nav > button:hover {
   cursor: pointer;
   background-color: lightgray;
+}
+
+.ui.card:first-child {
+  margin-top: 1em !important;
+}
+
+.ui.card:last-child {
+  margin-bottom: 1em !important;
 }

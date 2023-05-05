@@ -6,7 +6,6 @@ export default function SearchResult({data}) {
   const value = data.map((recipe) => {
     return <RecipeCard recipe={recipe} />
   })
-  console.log('value:', value);
 
   return (
     <div>
