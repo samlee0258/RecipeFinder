@@ -24,7 +24,7 @@ function App() {
     try {
       const response = await fetch(`https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}&q=${search}`);
       if (!response.ok) {
-        throw new Error('recipe not found');
+        throw new Error(response.text);
       }
       console.log(response.status);
       const jsonData = await response.json();

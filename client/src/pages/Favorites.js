@@ -21,7 +21,7 @@ export default function Favorites() {
         const recipeData = await getFavorites.json();
         setFavorites(recipeData);
       } catch (err) {
-        console.error(err);
+        alert(err);
       }
     }
     getFavoritesData();

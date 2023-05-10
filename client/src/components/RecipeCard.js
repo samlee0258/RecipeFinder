@@ -29,7 +29,7 @@ export default function RecipeCard({ recipe }) {
       }
       navigate('/favorites');
       } catch (err) {
-        console.error(err);
+        alert(err);
     }
   }
   return (
