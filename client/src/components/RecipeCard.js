@@ -34,6 +34,7 @@ export default function RecipeCard({ recipe }) {
   }
   return (
           <Card
+            fluid
             image={recipe.recipe.image}
             header={recipe.recipe.label}
             description={

@@ -1,4 +1,4 @@
-import { Grid, Card } from "semantic-ui-react"
+import { Grid, Card, Button } from "semantic-ui-react"
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import RecipeInfo from "../components/RecipeInfo";
@@ -44,6 +44,7 @@ export default function Favorites() {
         extra={
           <div>
             <Link to={recipe.recipeLink}>Recipe Link</Link>
+            <Button secondary negative basic>Delete</Button>
           </div>
         }
       />

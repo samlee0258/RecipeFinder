@@ -4,7 +4,11 @@ import { Grid } from 'semantic-ui-react';
 
 export default function SearchResult({data}) {
   const value = data.map((recipe) => {
-    return <RecipeCard recipe={recipe} />
+    return (
+      <Grid.Column>
+        <RecipeCard recipe={recipe} />
+      </Grid.Column>
+    )
   })
 
   return (
@@ -18,12 +22,8 @@ export default function SearchResult({data}) {
       >
         Search Result
       </h1>
-      <Grid container>
-        <Grid.Row children>
-          <Grid>
-            {value}
-          </Grid>
-        </Grid.Row>
+      <Grid container stackable doubling columns={4}>
+        {value}
       </Grid>
     </div>
   );
