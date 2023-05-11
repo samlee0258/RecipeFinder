@@ -1,29 +1,50 @@
-import { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import SearchResult from './pages/SearchResult';
+import Favorites from './pages/Favorites';
+import { Route, Routes } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+const APP_ID = process.env.REACT_APP_ID;
+const APP_KEY = process.env.REACT_APP_API_KEY;
 
 function App() {
-  const [serverData, setServerData] = useState("");
 
-  useEffect(() => {
-    async function getServerData() {
-      const resp = await fetch('/api/hello');
-      const data = await resp.json();
+  const [search, setSearch] = useState('');
+  const [recipes, setRecipes] = useState([]);
+  const navigate = useNavigate();
 
-      console.log('Data from server:', data);
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  };
 
-      setServerData(data.message);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`https://api.edamam.com/api/recipes/v2?type=public&app_id=${APP_ID}&app_key=${APP_KEY}&q=${search}`);
+      if (!response.ok) {
+        throw new Error(response.text);
+      }
+      console.log(response.status);
+      const jsonData = await response.json();
+      setRecipes(jsonData.hits);
+    } catch (err) {
+      console.error('Error:', err);
     }
-
-    getServerData();
-  }, []);
+    navigate('/search-result');
+  };
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>{serverData}</h1>
-      </header>
+      <Navbar />
+      <div>
+        <Routes>
+          <Route path='/' element={<Home onChange={handleChange} onSubmit={handleSubmit} />} />
+          <Route path='/search-result' element={<SearchResult data={recipes} />} />
+          <Route path='/favorites' element={<Favorites />} />
+        </Routes>
+      </div>
     </div>
   );
 }

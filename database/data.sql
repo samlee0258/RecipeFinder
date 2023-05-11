@@ -9,3 +9,6 @@
 --      ('Learn to code', false),
 --      ('Build projects', false),
 --      ('Get a job', false);
+
+  insert into "Users" ("firstName", "lastName", "username", "password", "email")
+  values ('Test', 'Account', 'testaccount', 'testaccount', 'dummydata@aol.com');
