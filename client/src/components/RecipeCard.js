@@ -1,8 +1,10 @@
 import { Card, Button } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function RecipeCard({ recipe }) {
   const navigate = useNavigate();
+  const [showInfo, setShowInfo] = useState(false);
 
   async function addToFavorites() {
     try {
@@ -42,6 +44,8 @@ export default function RecipeCard({ recipe }) {
                 <p>CuisineType: {recipe.recipe.cuisineType}</p>
                 <p>MealType: {recipe.recipe.mealType}</p>
                 <p>DishType: {recipe.recipe.dishType}</p>
+                {showInfo ? <ul>Ingredients: {recipe.recipe.ingredientLines.map(item => <li>{item}</li>)}</ul> : null}
+                <Button onClick={() => setShowInfo(!showInfo)}>{showInfo ? "Show less" : "Show more"}</Button>
               </div>
             }
             extra={
