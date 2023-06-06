@@ -36,6 +36,23 @@ app.get('/api/public/Tables/Recipes', async (req, res, next) => {
   }
 });
 
+app.post('/api/public/Tables/uri', async (req, res, next) => {
+  try {
+    const { uri } = req.body;
+    const sql = `
+      select *
+        from "Recipes"
+        where "uri" = $1;
+    `;
+    const params = [uri];
+    const result = await db.query(sql, params);
+    const recipeWithId = result.rows[0];
+    res.json(recipeWithId);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('/api/public/Tables/Users', async (req, res, next) => {
   try {
     const sql = `
@@ -141,34 +158,27 @@ app.post('/api/public/Tables/Recipes', async (req, res, next) => {
     const mealType = recipe.mealType[0];
     const dishType = recipe.dishType[0];
     const sql = `
-    insert into "Recipes" ("name", "image", "ingredients", "calories", "servingSize", "recipeLink", "cuisineType", "mealType", "dishType", "uri")
-    values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-    returning *
-    `;
-    const params = [recipe.label, recipe.image, ingredients, calories, servingSize, recipe.url, cuisineType, mealType, dishType, recipe.uri];
-    const result = await db.query(sql, params);
-    const newRecipe = result.rows[0];
-    fixIngredients(newRecipe);
-    res.status(201).json(newRecipe);
-  } catch (err) {
-    if (err.code === '23505') {
-      next(err);
-    }
-  }
-});
-
-app.post('/api/public/Tables/uri', async (req, res, next) => {
-  try {
-    const { uri } = req.body;
-    const sql = `
       select *
-        from "Recipes"
-        where "uri" = $1;
+      from "Recipes"
+      where  "uri" = $1;
     `;
-    const params = [uri];
+    const params = [recipe.uri];
     const result = await db.query(sql, params);
-    const recipeWithId = result.rows[0];
-    res.json(recipeWithId);
+    const duplicateRecipe = result.rows;
+    if (duplicateRecipe.length === 0) {
+      const sql2 = `
+      insert into "Recipes" ("name", "image", "ingredients", "calories", "servingSize", "recipeLink", "cuisineType", "mealType", "dishType", "uri")
+      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      returning *
+      `;
+      const params2 = [recipe.label, recipe.image, ingredients, calories, servingSize, recipe.url, cuisineType, mealType, dishType, recipe.uri];
+      const result2 = await db.query(sql2, params2);
+      const newRecipe = result2.rows[0];
+      fixIngredients(newRecipe);
+      res.status(201).json(newRecipe);
+    } else {
+      res.status(201).json(duplicateRecipe[0]);
+    }
   } catch (err) {
     next(err);
   }

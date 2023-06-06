@@ -12,15 +12,15 @@ export default function RecipeCard({ recipe }) {
     let body = { uri: recipeUri };
     async function getRecipeWithId() {
       try {
-        const res = await fetch('/api/public/Tables/Recipes/uri', {
+        const res = await fetch('/api/public/Tables/uri', {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(body)
         });
-          const result = await res.json();
-          setRecipeWithId(result);
+        const result = await res.json();
+        setRecipeWithId(result);
         } catch (err) {
           console.error(err);
         }
@@ -30,7 +30,6 @@ export default function RecipeCard({ recipe }) {
 
   async function addToFavorites() {
     try {
-      console.log('recipe:', recipeWithId);
       const resFav = await fetch('/api/public/Tables/Favorites', {
         method: "POST",
         headers: {

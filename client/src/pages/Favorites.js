@@ -32,7 +32,6 @@ export default function Favorites() {
   }
 
   const favoriteValue = favorites.map((recipe) => {
-    console.log('recipe:', recipe);
     return (
       <Grid.Column key={recipe.recipeId}>
         <FavCard handleDelete={handleDelete} recipe={recipe}/>

@@ -1,4 +1,4 @@
-import {React, useEffect, useCallback} from 'react';
+import { React, useEffect, useCallback } from 'react';
 import RecipeCard from '../components/RecipeCard';
 import { Grid } from 'semantic-ui-react';
 
@@ -6,29 +6,30 @@ export default function SearchResult({recipes, setRecipes}) {
   console.log('Recipes:', recipes);
   const addRecipe = useCallback(
     async (recipeObj) => {
-      const res = await fetch('/api/public/Tables/Recipes', {
+        const res = await fetch('/api/public/Tables/Recipes', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ recipeObj })
+        body: JSON.stringify(recipeObj)
       })
-      const result = await res.json();
-      setRecipes([...recipes, result]);
-      }, [recipes, setRecipes])
+      return await res.json();
+      // const result = await res.json();
+      // setRecipes([...recipes, result]);
+      }, [])
 
-  useEffect(() => {
-    async function addRecipes() {
-      try {
-        for (const recipeObj of recipes) {
-          await addRecipe(recipeObj);
+      const addRecipes = useCallback(async () => {
+        try {
+          for (const recipeObj of recipes) {
+            await addRecipe(recipeObj);
+          }
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) {
-        console.error(err);
-      }
-    }
+      }, [addRecipe, recipes])
+  useEffect(() => {
     addRecipes();
-  }, [addRecipe, recipes])
+  }, [addRecipes])
 
   return (
     <div>
@@ -42,8 +43,8 @@ export default function SearchResult({recipes, setRecipes}) {
         Search Result
       </h1>
       <Grid container stackable doubling columns={4}>
-        {recipes.map((recipeObj) =>
-            <Grid.Column key={recipeObj.recipe.uri}>
+        {recipes.map((recipeObj, index) =>
+            <Grid.Column key={index}>
               <RecipeCard recipe={recipeObj.recipe} />
             </Grid.Column>
           )
