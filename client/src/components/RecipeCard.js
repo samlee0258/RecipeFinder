@@ -1,30 +1,42 @@
 import { Card, Button } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function RecipeCard({ recipe }) {
   const navigate = useNavigate();
   const [showInfo, setShowInfo] = useState(false);
+  const [recipeWithId, setRecipeWithId] = useState({});
+  const recipeUri = recipe.uri;
+
+  useEffect(() => {
+    let body = { uri: recipeUri };
+    async function getRecipeWithId() {
+      try {
+        const res = await fetch('/api/public/Tables/Recipes/uri', {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+          const result = await res.json();
+          setRecipeWithId(result);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      getRecipeWithId();
+  }, [recipeUri]);
 
   async function addToFavorites() {
     try {
-      const resRecipes = await fetch('/api/public/Tables/Recipes', {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ recipe: recipe.recipe })
-      });
-      if (!resRecipes.ok) {
-        throw new Error('Failed to add recipe.');
-      }
-      const jsonData = await resRecipes.json();
+      console.log('recipe:', recipeWithId);
       const resFav = await fetch('/api/public/Tables/Favorites', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ recipeId: jsonData.recipeId, userId: 1 })
+        body: JSON.stringify({ recipeId: recipeWithId.recipeId, userId: 1 })
       });
       if (!resFav.ok) {
         throw new Error('Failed to add to favorites.');
@@ -37,14 +49,14 @@ export default function RecipeCard({ recipe }) {
   return (
           <Card
             fluid
-            image={recipe.recipe.image}
-            header={recipe.recipe.label}
+            image={recipe.image}
+            header={recipe.label}
             description={
               <div>
-                <p>CuisineType: {recipe.recipe.cuisineType}</p>
-                <p>MealType: {recipe.recipe.mealType}</p>
-                <p>DishType: {recipe.recipe.dishType}</p>
-                {showInfo ? <ul>Ingredients: {recipe.recipe.ingredientLines.map(item => <li>{item}</li>)}</ul> : null}
+                <p>CuisineType: {recipe.cuisineType}</p>
+                <p>MealType: {recipe.mealType}</p>
+                <p>DishType: {recipe.dishType}</p>
+                {showInfo ? <ul>Ingredients: {recipe.ingredientLines.map((item, index) => <li key={index}>{item}</li>)}</ul> : null}
                 <Button onClick={() => setShowInfo(!showInfo)}>{showInfo ? "Show less" : "Show more"}</Button>
               </div>
             }

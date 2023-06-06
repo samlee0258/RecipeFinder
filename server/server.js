@@ -36,20 +36,6 @@ app.get('/api/public/Tables/Recipes', async (req, res, next) => {
   }
 });
 
-app.get('/api/public/Tables/Ingredients', async (req, res, next) => {
-  try {
-    const sql = `
-      select *
-        from "Ingredients";
-    `;
-    const result = await db.query(sql);
-    const ingredients = result.rows;
-    res.json(ingredients);
-  } catch (err) {
-    next(err);
-  }
-});
-
 app.get('/api/public/Tables/Users', async (req, res, next) => {
   try {
     const sql = `
@@ -166,8 +152,24 @@ app.post('/api/public/Tables/Recipes', async (req, res, next) => {
     res.status(201).json(newRecipe);
   } catch (err) {
     if (err.code === '23505') {
-      console.error({ message: 'Recipe already added.' });
+      next(err);
     }
+  }
+});
+
+app.post('/api/public/Tables/uri', async (req, res, next) => {
+  try {
+    const { uri } = req.body;
+    const sql = `
+      select *
+        from "Recipes"
+        where "uri" = $1;
+    `;
+    const params = [uri];
+    const result = await db.query(sql, params);
+    const recipeWithId = result.rows[0];
+    res.json(recipeWithId);
+  } catch (err) {
     next(err);
   }
 });

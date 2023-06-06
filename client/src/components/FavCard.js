@@ -2,9 +2,26 @@ import { Grid, Card, Button } from "semantic-ui-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-
-export default function FavCard({ recipe }) {
+export default function FavCard({ handleDelete, recipe }) {
   const [showInfo, setShowInfo] = useState(false);
+
+  async function deleteFromFav() {
+    try {
+      const deleteRecipe = await fetch(`/api/public/Tables/Favorites/${recipe.recipeId}`, {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+      console.log(deleteRecipe);
+      if (!deleteRecipe.ok) {
+        throw new Error('Failed to delete recipe.');
+      }
+      handleDelete(recipe.recipeId);
+    } catch (err) {
+      alert(err);
+    }
+  }
 
   return (
     <Card
@@ -16,7 +33,7 @@ export default function FavCard({ recipe }) {
           <p>CuisineType: {recipe.cuisineType}</p>
           <p>MealType: {recipe.mealType}</p>
           <p>DishType: {recipe.dishType}</p>
-          {showInfo ? <ul>Ingredients: {recipe.ingredients.map(item => <li>{item}</li>)}</ul> : null}
+          {showInfo ? <ul>Ingredients: {recipe.ingredients.map((item, index) => <li key={index}>{item}</li>)}</ul> : null}
           <Button onClick={() => setShowInfo(!showInfo)}>{showInfo ? "Show less" : "Show more"}</Button>
         </div>
       }
@@ -26,7 +43,7 @@ export default function FavCard({ recipe }) {
             <Link to={recipe.recipeLink} target="_blank" rel="noreferrer noopener">Recipe Link</Link>
           </Grid.Column>
           <Grid.Column>
-            <Button secondary negative basic>Delete</Button>
+            <Button secondary negative basic onClick={deleteFromFav}>Delete</Button>
           </Grid.Column>
         </Grid>
       }
