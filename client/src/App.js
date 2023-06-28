@@ -26,7 +26,6 @@ function App() {
       if (!response.ok) {
         throw new Error(response.text);
       }
-      console.log(response.status);
       const jsonData = await response.json();
       setRecipes(jsonData.hits.slice(0, 20));
     } catch (err) {

@@ -3,7 +3,6 @@ import RecipeCard from '../components/RecipeCard';
 import { Grid } from 'semantic-ui-react';
 
 export default function SearchResult({recipes, setRecipes}) {
-  console.log('Recipes:', recipes);
   const addRecipe = useCallback(
     async (recipeObj) => {
         const res = await fetch('/api/public/Tables/Recipes', {

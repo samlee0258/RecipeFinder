@@ -173,7 +173,6 @@ app.post('/api/public/Tables/Recipes', async (req, res, next) => {
     const params = [recipe.uri];
     const result = await db.query(sql, params);
     const duplicateRecipe = result.rows;
-    console.log('duplicateRecipe:', duplicateRecipe);
     if (duplicateRecipe.length === 0) {
       const sql2 = `
       insert into "Recipes" ("name", "image", "ingredients", "calories", "servingSize", "recipeLink", "cuisineType", "mealType", "dishType", "uri")
@@ -183,7 +182,6 @@ app.post('/api/public/Tables/Recipes', async (req, res, next) => {
       const params2 = [recipe.label, recipe.image, ingredients, calories, servingSize, recipe.url, cuisineType, mealType, dishType, recipe.uri];
       const result2 = await db.query(sql2, params2);
       const newRecipe = result2.rows[0];
-      console.log('newRecipe:', newRecipe);
       fixIngredients(newRecipe);
       res.status(201).json(newRecipe);
     } else {

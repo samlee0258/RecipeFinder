@@ -13,7 +13,6 @@ export default function FavCard({ handleDelete, recipe }) {
           'Content-Type': 'application/json'
         },
       });
-      console.log(deleteRecipe);
       if (!deleteRecipe.ok) {
         throw new Error('Failed to delete recipe.');
       }
