@@ -1,41 +1,20 @@
 import { Card, Button } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function RecipeCard({ recipe }) {
   const navigate = useNavigate();
   const [showInfo, setShowInfo] = useState(false);
-  const [recipeWithId, setRecipeWithId] = useState({});
-  const recipeUri = recipe.uri;
-
-  useEffect(() => {
-    let body = { uri: recipeUri };
-    async function getRecipeWithId() {
-      try {
-        const res = await fetch('/api/public/Tables/uri', {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(body)
-        });
-        const result = await res.json();
-        setRecipeWithId(result);
-        } catch (err) {
-          console.error(err);
-        }
-      }
-      getRecipeWithId();
-  }, [recipeUri]);
+  const recipeUri = btoa(recipe.uri);
 
   async function addToFavorites() {
     try {
-      const resFav = await fetch('/api/public/Tables/Favorites', {
+      const resFav = await fetch(`/api/public/Tables/Favorites/${recipeUri}`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ recipeId: recipeWithId.recipeId, userId: 1 })
+        body: JSON.stringify({ userId: 1 })
       });
       if (!resFav.ok) {
         throw new Error('Failed to add to favorites.');
