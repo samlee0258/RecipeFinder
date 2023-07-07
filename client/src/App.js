@@ -26,9 +26,8 @@ function App() {
       if (!response.ok) {
         throw new Error(response.text);
       }
-      console.log(response.status);
       const jsonData = await response.json();
-      setRecipes(jsonData.hits);
+      setRecipes(jsonData.hits.slice(0, 20));
     } catch (err) {
       console.error('Error:', err);
     }
@@ -41,7 +40,7 @@ function App() {
       <div>
         <Routes>
           <Route path='/' element={<Home onChange={handleChange} onSubmit={handleSubmit} />} />
-          <Route path='/search-result' element={<SearchResult data={recipes} />} />
+          <Route path='/search-result' element={<SearchResult recipes={recipes} setRecipes={setRecipes} />} />
           <Route path='/favorites' element={<Favorites />} />
         </Routes>
       </div>

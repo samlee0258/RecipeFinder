@@ -36,15 +36,18 @@ app.get('/api/public/Tables/Recipes', async (req, res, next) => {
   }
 });
 
-app.get('/api/public/Tables/Ingredients', async (req, res, next) => {
+app.get('/api/public/Tables/uri', async (req, res, next) => {
   try {
+    const { uri } = req.body;
     const sql = `
       select *
-        from "Ingredients";
+        from "Recipes"
+        where "uri" = $1;
     `;
-    const result = await db.query(sql);
-    const ingredients = result.rows;
-    res.json(ingredients);
+    const params = [uri];
+    const result = await db.query(sql, params);
+    const recipeWithId = result.rows[0];
+    res.json(recipeWithId);
   } catch (err) {
     next(err);
   }
@@ -82,6 +85,42 @@ app.get('/api/public/Tables/Favorites', async (req, res, next) => {
   }
 });
 
+app.post('/api/public/Tables/Favorites/:uri', async (req, res, next) => {
+  try {
+    const { uri } = req.params;
+    const sql = `
+      select "recipeId"
+        from "Recipes"
+        where "uri" = $1;
+    `;
+    const params = [atob(uri)];
+    const result = await db.query(sql, params);
+    const recipeResult = result.rows[0].recipeId;
+    const userId = Number(req.body.userId);
+    const recipeId = Number(recipeResult);
+    if (!userId || !recipeId) {
+      throw new ClientError(400, 'userId and recipeId are required fields');
+    }
+    if (Number.isNaN(recipeId) || !Number.isInteger(recipeId) || recipeId <= 0) {
+      throw new ClientError(400, 'recipeId must be a positive integer');
+    }
+    if (Number.isNaN(recipeId) || !Number.isInteger(userId) || userId <= 0) {
+      throw new ClientError(400, 'userId must be a positive integer');
+    }
+    const sql2 = `
+      insert into "Favorites" ("recipeId", "userId")
+      values ($1, $2)
+      returning *
+    `;
+    const params2 = [recipeId, userId];
+    const result2 = await db.query(sql2, params2);
+    const [newRecipe] = result2.rows;
+    res.status(201).json(newRecipe);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('/api/public/Tables/Favorites/:recipeId', async (req, res, next) => {
   try {
     const recipeId = Number(req.params.recipeId);
@@ -108,33 +147,6 @@ app.get('/api/public/Tables/Favorites/:recipeId', async (req, res, next) => {
   }
 });
 
-app.post('/api/public/Tables/Favorites', async (req, res, next) => {
-  try {
-    const userId = Number(req.body.userId);
-    const recipeId = Number(req.body.recipeId);
-    if (!userId || !recipeId) {
-      throw new ClientError(400, 'userId and recipeId are required fields');
-    }
-    if (Number.isNaN(recipeId) || !Number.isInteger(recipeId) || recipeId <= 0) {
-      throw new ClientError(400, 'recipeId must be a positive integer');
-    }
-    if (Number.isNaN(recipeId) || !Number.isInteger(userId) || userId <= 0) {
-      throw new ClientError(400, 'userId must be a positive integer');
-    }
-    const sql = `
-      insert into "Favorites" ("recipeId", "userId")
-      values ($1, $2)
-      returning *
-    `;
-    const params = [recipeId, userId];
-    const result = await db.query(sql, params);
-    const [newRecipe] = result.rows;
-    res.status(201).json(newRecipe);
-  } catch (err) {
-    next(err);
-  }
-});
-
 app.post('/api/public/Tables/Recipes', async (req, res, next) => {
   try {
     const { recipe } = req.body;
@@ -142,7 +154,6 @@ app.post('/api/public/Tables/Recipes', async (req, res, next) => {
       throw new ClientError(400, 'recipe is required');
     }
     const calories = Number(recipe.calories.toFixed(0));
-    console.log(calories);
     const servingSize = Number(recipe.yield.toFixed(0));
     if (!Number.isInteger(calories) || calories <= 0) {
       throw new ClientError(400, 'calories must be a positive integer');
@@ -155,19 +166,28 @@ app.post('/api/public/Tables/Recipes', async (req, res, next) => {
     const mealType = recipe.mealType[0];
     const dishType = recipe.dishType[0];
     const sql = `
-    insert into "Recipes" ("name", "image", "ingredients", "calories", "servingSize", "recipeLink", "cuisineType", "mealType", "dishType", "uri")
-    values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-    returning *
+      select *
+      from "Recipes"
+      where  "uri" = $1;
     `;
-    const params = [recipe.label, recipe.image, ingredients, calories, servingSize, recipe.url, cuisineType, mealType, dishType, recipe.uri];
+    const params = [recipe.uri];
     const result = await db.query(sql, params);
-    const newRecipe = result.rows[0];
-    fixIngredients(newRecipe);
-    res.status(201).json(newRecipe);
-  } catch (err) {
-    if (err.code === '23505') {
-      console.error({ message: 'Recipe already added.' });
+    const duplicateRecipe = result.rows;
+    if (duplicateRecipe.length === 0) {
+      const sql2 = `
+      insert into "Recipes" ("name", "image", "ingredients", "calories", "servingSize", "recipeLink", "cuisineType", "mealType", "dishType", "uri")
+      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      returning *
+      `;
+      const params2 = [recipe.label, recipe.image, ingredients, calories, servingSize, recipe.url, cuisineType, mealType, dishType, recipe.uri];
+      const result2 = await db.query(sql2, params2);
+      const newRecipe = result2.rows[0];
+      fixIngredients(newRecipe);
+      res.status(201).json(newRecipe);
+    } else {
+      res.status(201).json(duplicateRecipe[0]);
     }
+  } catch (err) {
     next(err);
   }
 });

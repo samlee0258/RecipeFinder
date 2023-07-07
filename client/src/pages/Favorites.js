@@ -26,14 +26,19 @@ export default function Favorites() {
     getFavoritesData();
   }, []);
 
+  const handleDelete = (recipeId) => {
+    const newFav = favorites.filter(favorite => favorite.recipeId !== recipeId);
+    setFavorites(newFav);
+  }
+
   const favoriteValue = favorites.map((recipe) => {
-    console.log('recipe:', recipe);
     return (
-      <Grid.Column>
-        <FavCard recipe={recipe}/>
+      <Grid.Column key={recipe.recipeId}>
+        <FavCard handleDelete={handleDelete} recipe={recipe}/>
       </Grid.Column>
     )
   });
+
 
   return (
     <div>
