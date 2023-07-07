@@ -1,0 +1,25 @@
+.home-page {
+  margin-top: 8rem;
+}
+
+.home-page > h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  -webkit-text-stroke: 1px black;
+}
+
+.searchInput {
+  margin-top: 20px;
+  padding: 8px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.searchBttn {
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #79DFC1;
+  margin: 5px;
+  padding: 8px;
+}

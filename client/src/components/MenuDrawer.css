@@ -1,0 +1,59 @@
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.container {
+  display: flex;
+}
+
+.menu {
+  width: 283px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: fixed;
+  z-index: 2;
+  background-color: white;
+  padding-left: 1rem;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(100%);
+}
+
+.menu-item {
+  margin: 0.5rem 0;
+  font-weight: bold;
+  padding: 0%;
+}
+
+.menu-button {
+  margin: 1rem;
+}
+
+.menu-heading {
+  margin: default;
+}
+
+.view-title {
+  text-align: center;
+  position: fixed;
+  inset: 20% 40% 0;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background-color: black;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.hide {
+  transform: translateX(100%);
+}
+
+.show {
+  transform: translateX(-100%);
+}
