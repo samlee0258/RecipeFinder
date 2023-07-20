@@ -2,12 +2,12 @@ import { Grid, Card, Button } from "semantic-ui-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function FavCard({ handleDelete, recipe }) {
+export default function FavCard({ onDelete, recipe }) {
   const [showInfo, setShowInfo] = useState(false);
 
   async function deleteFromFav() {
     try {
-      const deleteRecipe = await fetch(`/api/public/Tables/Favorites/${recipe.recipeId}`, {
+      const deleteRecipe = await fetch(`/api/tables/favorites/${recipe.recipeId}`, {
         method: "DELETE",
         headers: {
           'Content-Type': 'application/json'
@@ -16,7 +16,7 @@ export default function FavCard({ handleDelete, recipe }) {
       if (!deleteRecipe.ok) {
         throw new Error('Failed to delete recipe.');
       }
-      handleDelete(recipe.recipeId);
+      onDelete(recipe.recipeId);
     } catch (err) {
       alert(err);
     }
