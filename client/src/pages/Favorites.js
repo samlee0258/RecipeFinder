@@ -8,7 +8,7 @@ export default function Favorites() {
   useEffect(() => {
     async function getFavoritesData() {
       try {
-        const getFavorites = await fetch('/api/public/Tables/Favorites', {
+        const getFavorites = await fetch('/api/tables/favorites', {
           method: "GET",
           headers: {
             'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ export default function Favorites() {
     getFavoritesData();
   }, []);
 
-  const handleDelete = (recipeId) => {
+  const onDelete = (recipeId) => {
     const newFav = favorites.filter(favorite => favorite.recipeId !== recipeId);
     setFavorites(newFav);
   }
@@ -34,7 +34,7 @@ export default function Favorites() {
   const favoriteValue = favorites.map((recipe) => {
     return (
       <Grid.Column key={recipe.recipeId}>
-        <FavCard handleDelete={handleDelete} recipe={recipe}/>
+        <FavCard onDelete={onDelete} recipe={recipe}/>
       </Grid.Column>
     )
   });

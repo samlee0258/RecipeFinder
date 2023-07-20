@@ -5,7 +5,7 @@ import { Grid } from 'semantic-ui-react';
 export default function SearchResult({recipes, setRecipes}) {
   const addRecipe = useCallback(
     async (recipeObj) => {
-        const res = await fetch('/api/public/Tables/Recipes', {
+        const res = await fetch('/api/tables/recipes', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -13,8 +13,6 @@ export default function SearchResult({recipes, setRecipes}) {
         body: JSON.stringify(recipeObj)
       })
       return await res.json();
-      // const result = await res.json();
-      // setRecipes([...recipes, result]);
       }, [])
 
       const addRecipes = useCallback(async () => {

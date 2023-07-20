@@ -9,7 +9,7 @@ export default function RecipeCard({ recipe }) {
 
   async function addToFavorites() {
     try {
-      const resFav = await fetch(`/api/public/Tables/Favorites/${recipeUri}`, {
+      const resFav = await fetch(`/api/tables/favorites/${recipeUri}`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -34,7 +34,7 @@ export default function RecipeCard({ recipe }) {
                 <p>CuisineType: {recipe.cuisineType}</p>
                 <p>MealType: {recipe.mealType}</p>
                 <p>DishType: {recipe.dishType}</p>
-                {showInfo ? <ul>Ingredients: {recipe.ingredientLines.map((item, index) => <li key={index}>{item}</li>)}</ul> : null}
+                {showInfo && <ul>Ingredients: {recipe.ingredientLines.map((item, index) => <li key={index}>{item}</li>)}</ul>}
                 <Button onClick={() => setShowInfo(!showInfo)}>{showInfo ? "Show less" : "Show more"}</Button>
               </div>
             }

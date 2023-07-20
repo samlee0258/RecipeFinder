@@ -22,7 +22,7 @@ app.use(express.static(reactStaticDir));
 app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
-app.get('/api/public/Tables/Recipes', async (req, res, next) => {
+app.get('/api/tables/recipes', async (req, res, next) => {
   try {
     const sql = `
       select *
@@ -36,7 +36,7 @@ app.get('/api/public/Tables/Recipes', async (req, res, next) => {
   }
 });
 
-app.get('/api/public/Tables/uri', async (req, res, next) => {
+app.get('/api/tables/uri', async (req, res, next) => {
   try {
     const { uri } = req.body;
     const sql = `
@@ -53,7 +53,7 @@ app.get('/api/public/Tables/uri', async (req, res, next) => {
   }
 });
 
-app.get('/api/public/Tables/Users', async (req, res, next) => {
+app.get('/api/tables/users', async (req, res, next) => {
   try {
     const sql = `
       select *
@@ -67,7 +67,7 @@ app.get('/api/public/Tables/Users', async (req, res, next) => {
   }
 });
 
-app.get('/api/public/Tables/Favorites', async (req, res, next) => {
+app.get('/api/tables/favorites', async (req, res, next) => {
   try {
     const sql = `
       select *
@@ -85,7 +85,7 @@ app.get('/api/public/Tables/Favorites', async (req, res, next) => {
   }
 });
 
-app.post('/api/public/Tables/Favorites/:uri', async (req, res, next) => {
+app.post('/api/tables/favorites/:uri', async (req, res, next) => {
   try {
     const { uri } = req.params;
     const sql = `
@@ -121,7 +121,7 @@ app.post('/api/public/Tables/Favorites/:uri', async (req, res, next) => {
   }
 });
 
-app.get('/api/public/Tables/Favorites/:recipeId', async (req, res, next) => {
+app.get('/api/tables/favorites/:recipeId', async (req, res, next) => {
   try {
     const recipeId = Number(req.params.recipeId);
     if (!Number.isInteger(recipeId) || recipeId <= 0) {
@@ -138,16 +138,15 @@ app.get('/api/public/Tables/Favorites/:recipeId', async (req, res, next) => {
     const [recipe] = result.rows;
     if (!recipe) {
       throw new ClientError(404, `cannot find recipe with recipeId ${recipeId}`);
-    } else {
-      fixIngredients(recipe);
-      res.json(recipe);
     }
+    fixIngredients(recipe);
+    res.json(recipe);
   } catch (err) {
     next(err);
   }
 });
 
-app.post('/api/public/Tables/Recipes', async (req, res, next) => {
+app.post('/api/tables/recipes', async (req, res, next) => {
   try {
     const { recipe } = req.body;
     if (!recipe) {
@@ -192,7 +191,7 @@ app.post('/api/public/Tables/Recipes', async (req, res, next) => {
   }
 });
 
-app.delete('/api/public/Tables/Favorites/:recipeId', async (req, res, next) => {
+app.delete('/api/tables/favorites/:recipeId', async (req, res, next) => {
   try {
     const recipeId = Number(req.params.recipeId);
     if (!Number.isInteger(recipeId) || recipeId <= 0) {
