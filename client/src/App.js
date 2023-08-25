@@ -10,7 +10,6 @@ const APP_ID = process.env.REACT_APP_ID;
 const APP_KEY = process.env.REACT_APP_API_KEY;
 
 function App() {
-
   const [search, setSearch] = useState('');
   const [recipes, setRecipes] = useState([]);
   const navigate = useNavigate();
