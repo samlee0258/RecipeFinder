@@ -1,9 +1,12 @@
-import { Grid } from "semantic-ui-react"
+import { Grid, Dimmer, Loader } from "semantic-ui-react"
 import { useState, useEffect } from "react";
 import FavCard from "../components/FavCard";
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+
 
   useEffect(() => {
     async function getFavoritesData() {
@@ -20,9 +23,11 @@ export default function Favorites() {
         const recipeData = await getFavorites.json();
         setFavorites(recipeData);
       } catch (err) {
-        alert(err);
+        setError(err);
       }
+      setIsLoading(false);
     }
+    setIsLoading(true);
     getFavoritesData();
   }, []);
 
@@ -39,6 +44,17 @@ export default function Favorites() {
     )
   });
 
+  if (isLoading) return (
+    <div>
+      <Dimmer active>
+        <Loader>Loading</Loader>
+      </Dimmer>
+    </div>
+  )
+
+  if (error) return (
+    <div>Error occurred: {error.message}</div>
+  )
 
   return (
     <div>
@@ -52,7 +68,7 @@ export default function Favorites() {
         Favorites
       </h1>
       <Grid container stackable doubling columns={4}>
-        {favoriteValue}
+        {favoriteValue.length > 0 ? favoriteValue : <Grid.Row stretched centered style={{background: 'white'}}>No Favorites</Grid.Row>}
       </Grid>
     </div>
   )
