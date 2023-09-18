@@ -4,11 +4,15 @@ import errorMiddleware from './lib/error-middleware.js';
 import ClientError from './lib/client-error.js';
 import pg from 'pg';
 
+const connectionString =
+  process.env.DATABASE_URL ||
+  `postgresql://${process.env.RDS_USERNAME}:${process.env.RDS_PASSWORD}@${process.env.RDS_HOSTNAME}:${process.env.RDS_PORT}/${process.env.RDS_DB_NAME}`;
+// eslint-disable-next-line no-unused-vars -- Remove when used
 const db = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 const app = express();
