@@ -8,8 +8,9 @@
     "start": "NODE_ENV=production node server/server.js",
     "build": "npm run build --prefix client",
     "db:import": "npm run db:import --prefix database",
-    "preinstall": "npm install --prefix client && npm install --prefix server",
-    "prepare": "husky install"
+    "postinstall": "npm install --prefix client && npm install --prefix server",
+    "prepare": "husky install",
+    "deploy": "git push --force origin main:pub"
   },
   "devDependencies": {
     "eslint": "^8.26.0",
