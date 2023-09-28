@@ -1,4 +1,4 @@
-# #!/bin/sh
+#!/bin/sh
 
 # # Install psql
 # dnf -y install postgresql15
