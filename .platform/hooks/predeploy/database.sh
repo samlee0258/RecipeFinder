@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Don't do database operations if db is not configured
+/opt/elasticbeanstalk/bin/get-config environment -k RDS_DB_NAME || exit 0
+
 # Install psql
 dnf -y install postgresql15
 
