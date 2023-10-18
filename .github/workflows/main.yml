@@ -25,7 +25,7 @@ jobs:
           sed -i '/install:client/d' package.json
           sed -i '/install:env/d' package.json
           sed -i '/prepare/d' package.json
-          zip -r deploy.zip .platform client/dist server database package.json package-lock.json \
+          zip -r deploy.zip .platform client/build server database package.json package-lock.json \
             -x "*/.env*" "*/node_modules/*"
 
       - name: Deploy to EB
